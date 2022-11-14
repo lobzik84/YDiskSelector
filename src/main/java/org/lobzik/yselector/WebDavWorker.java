@@ -22,8 +22,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class WebDavWorker {
     final static String URL = "https://webdav.yandex.ru/";
     final static String ROOT_FOLDER = "/Сезон 2023";
-    final static String LOGIN = "agata-119";
-    final static String PSWD = "rigkxpbecusshfux";
+    final static String LOGIN = "*****";
+    final static String PSWD = "******";
     final static AtomicBoolean run = new AtomicBoolean(true);
 
     public static void fetch(File sourceDir, Label result, TextArea notfoundLabel, TreeMap picsMap) {
@@ -32,8 +32,7 @@ public class WebDavWorker {
         LinkedList<DavResource> filesList = new LinkedList();
         String folderName = sourceDir.getName();
         String startFolder = ROOT_FOLDER + "/" + folderName;
-        //String login = "l0bzik";
-        //String pswd = "cownrmcqhcnpnldi";
+
 
 
         Sardine sardine = SardineFactory.begin(LOGIN, PSWD);

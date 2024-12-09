@@ -21,9 +21,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class WebDavWorker {
     final static String URL = "https://webdav.yandex.ru/";
-    final static String ROOT_FOLDER = "/Сезон 2023";
-    final static String LOGIN = "*****";
-    final static String PSWD = "******";
+    final static String ROOT_FOLDER = "/Сезон 2025";
+    final static String LOGIN = "agata-119";
+    final static String PSWD = "rigkxpbecusshfux";
     final static AtomicBoolean run = new AtomicBoolean(true);
 
     public static void fetch(File sourceDir, Label result, TextArea notfoundLabel, TreeMap picsMap) {
@@ -49,16 +49,23 @@ public class WebDavWorker {
                     if (!url.equals(startFolderUrl)) {
                         //System.out.println(url);
                         result.setText("Looking in " + url);
-                        List<DavResource> subdir = sardine.list(url);
-
-                        for (DavResource dr : subdir) {
-                            if (dr.getPath().equals(res.getPath())) continue;
-                            boolean exists = false;
-                            for (DavResource item : list) {
-                                if (item.getPath().equals(dr.getPath())) exists = true;
+                        try {
+                            List<DavResource> subdir = sardine.list(url);
+                            for (DavResource dr : subdir) {
+                                if (dr.getPath().equals(res.getPath())) continue;
+                                boolean exists = false;
+                                for (DavResource item : list) {
+                                    if (item.getPath().equals(dr.getPath())) exists = true;
+                                }
+                                if (!exists) list.add(dr);
                             }
-                            if (!exists) list.add(dr);
+                        } catch (Exception se) {
+                            System.out.println("Error while looking in " + url);
+                            se.printStackTrace();
+                            continue;
                         }
+
+
                     }
                 } else {
                     filesList.add(res);//System.out.println(res.getPath());
@@ -85,7 +92,7 @@ public class WebDavWorker {
                 String fileNamePrefix = "";
                 if (name.startsWith("Portrait_")) {
                     lastNameFolder = name.substring("Portrait_".length());
-                    fileNamePrefix = "1PORT_";
+                    //fileNamePrefix = "1PORT_";
                 }
                 File nameDir = new File (sourceDir.getAbsolutePath()+ File.separator + lastNameFolder);
                 if (!nameDir.exists()) {

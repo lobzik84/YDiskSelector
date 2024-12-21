@@ -15,9 +15,9 @@ configurations {
 }
 
 dependencies {
-    implementation 'com.github.lookfirst:sardine:5.10'
+    implementation 'com.github.lookfirst:sardine:5.12'
     implementation 'com.github.miachm.sods:SODS:1.5.1'
-    extraLibs 'com.github.lookfirst:sardine:5.10'
+    extraLibs 'com.github.lookfirst:sardine:5.12'
     extraLibs 'com.github.miachm.sods:SODS:1.5.1'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'

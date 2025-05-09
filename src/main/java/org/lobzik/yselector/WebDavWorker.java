@@ -12,38 +12,31 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.NumberFormat;
-import java.util.TreeMap;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class WebDavWorker {
-    final static String URL = "https://webdav.yandex.ru/";
-    final static String ROOT_FOLDER = "/Сезон 2025";
-    final static String LOGIN = "agata-119";
-    final static String PSWD = "rigkxpbecusshfux";
     final static AtomicBoolean run = new AtomicBoolean(true);
 
-    public static void fetch(File sourceDir, Label result, TextArea notfoundLabel, TreeMap picsMap) {
+    public static void fetch(File sourceDir, Label result, TextArea notfoundLabel, TreeMap picsMap, Properties props) {
         run.set(true);
         notfoundLabel.setText("");
         LinkedList<DavResource> filesList = new LinkedList();
         String folderName = sourceDir.getName();
-        String startFolder = ROOT_FOLDER + "/" + folderName;
+        String startFolder = props.getProperty("ROOT_FOLDER") + "/" + folderName;
 
 
 
-        Sardine sardine = SardineFactory.begin(LOGIN, PSWD);
+        Sardine sardine = SardineFactory.begin(props.getProperty("LOGIN"), props.getProperty("PSWD"));
         try {
             List<DavResource> list = new LinkedList();
-            String startFolderUrl = getAbsUrl(startFolder);
+            String startFolderUrl = getAbsUrl(startFolder, props);
             list.addAll(sardine.list(startFolderUrl));
             for (int i = 0; i < list.size(); i++) {
                 if (!run.get()) break;
                 DavResource res = list.get(i);
-                String url = getAbsUrl(res);
+                String url = getAbsUrl(res, props);
 
                 if (res.isDirectory()) {
                     if (!url.equals(startFolderUrl)) {
@@ -112,7 +105,7 @@ public class WebDavWorker {
                     foundCounter++;
                     String filename = nameDir.getName() + File.separator + fileNamePrefix + dr.getName();
 
-                    String url = getAbsUrl(dr);
+                    String url = getAbsUrl(dr, props);
                     File dst = new File(nameDir.getAbsolutePath() + File.separator + fileNamePrefix + dr.getName());
                     if (dst.exists() && dst.isFile() && Files.size(Paths.get(dst.getAbsolutePath())) == dr.getContentLength()) {
                         skippedCounter++;
@@ -143,14 +136,14 @@ public class WebDavWorker {
         }
     }
 
-    public static String getAbsUrl(String drPath) {
+    public static String getAbsUrl(String drPath, Properties props) {
         String path = drPath.replaceAll(" ", "%20").substring(1);
-        String url = URL + path;
+        String url = props.getProperty("URL") + path;
         return url;
     }
 
-    public static String getAbsUrl(DavResource dr) {
-        return getAbsUrl(dr.getPath());
+    public static String getAbsUrl(DavResource dr, Properties props) {
+        return getAbsUrl(dr.getPath(), props);
     }
 
     public static void rewriteStreams(InputStream is, OutputStream os, String filename, long size, Label result) throws Exception {

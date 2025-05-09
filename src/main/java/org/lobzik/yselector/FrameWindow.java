@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Properties;
 import java.util.TreeMap;
 import java.util.LinkedList;
 
@@ -40,7 +41,7 @@ public class FrameWindow extends Frame implements ActionListener, WindowListener
     StopListener stopListener;
     Frame frame;
 
-    public FrameWindow(String szTitle) {
+    public FrameWindow(String szTitle, Properties props) {
         super(szTitle);
         setSize(800, 500);
 
@@ -84,7 +85,7 @@ public class FrameWindow extends Frame implements ActionListener, WindowListener
 
         copyB = new Button("Copy!");
         copyB.setBounds(30, 120, 80, 30);
-        copyListener = new CopyListener();
+        copyListener = new CopyListener(props);
         stopListener = new StopListener();
         copyB.addActionListener(copyListener);
         add(copyB);
@@ -136,7 +137,11 @@ public class FrameWindow extends Frame implements ActionListener, WindowListener
 
 
     public class CopyListener implements ActionListener {
-
+        Properties props;
+        public CopyListener(Properties props) {
+            super();
+            this.props = props;
+        }
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource().equals(copyB)) {
@@ -154,7 +159,7 @@ public class FrameWindow extends Frame implements ActionListener, WindowListener
                     File workingDir = new File(fdlg.getDirectory());
                     result.setText("Fetch from " + workingDir.getName());
                     new Thread(() -> {
-                        WebDavWorker.fetch(workingDir, result, notfoundLabel, picsMap);
+                        WebDavWorker.fetch(workingDir, result, notfoundLabel, picsMap, props);
                         copyB.removeActionListener(stopListener);
                         copyB.addActionListener(copyListener);
                         copyB.setLabel("Copy!");

@@ -1,19 +1,8 @@
 package org.lobzik.yselector;
 
-import com.github.sardine.DavResource;
-import com.github.sardine.Sardine;
-import com.github.sardine.SardineFactory;
-import org.apache.http.entity.FileEntity;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.Properties;
 public class YDiskSelector {
 
 
@@ -21,15 +10,37 @@ public class YDiskSelector {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-/*
         try {
-            HashMap picsMap = ODSParser.parse(new File("/home/lobzik/Temp/ydisk-test/1554_9Е/1554_9Е.ods"));
-            System.out.println(picsMap);
+            // Получаем путь к jar-файлу
+            String jarPath = new File(YDiskSelector.class.getProtectionDomain()
+                    .getCodeSource().getLocation().toURI()).getParent();
+
+            File propertiesFile = new File(jarPath, "YDiskSelector.properties");
+
+            if (!propertiesFile.exists()) {
+                System.err.println("Файл YDiskSelector.properties не найден в: " + jarPath);
+                return;
+            }
+
+            Properties props = new Properties();
+            // Загружаем с учетом UTF-8
+            try (InputStreamReader reader = new InputStreamReader(
+                    new FileInputStream(propertiesFile), StandardCharsets.UTF_8)) {
+                props.load(reader);
+            }
+
+            /*System.out.println("Содержимое файла YDiskSelector.properties:");
+            for (String key : props.stringPropertyNames()) {
+                String value = props.getProperty(key);
+                System.out.printf("%s = %s%n", key, value);
+            }*/
+            FrameWindow frame = new FrameWindow("Yandex Disk Selector v1.2  " + props.getProperty("ROOT_FOLDER"), props);
+            frame.setVisible(true);
+
         } catch (Exception e) {
+            System.err.println("Ошибка при чтении файла: " + e.getMessage());
             e.printStackTrace();
-        }*/
-        FrameWindow frame = new FrameWindow("Yandex Disk Selector v0.1 by l0bzik for Agata :)");
-        frame.setVisible(true);
+        }
 
     }
 
